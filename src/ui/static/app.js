@@ -298,7 +298,7 @@ async function addLastRequestToMalicious() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                dataset_type: 'pharmacy-malicious-baseline',
+                dataset_type: 'malicious',
                 text: lastUserRequest,
                 timestamp: new Date().toISOString()
             })
@@ -340,7 +340,7 @@ async function addLastRequestToRelevant() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                dataset_type: 'pharmacy-anomaly-baseline',
+                dataset_type: 'anomaly',
                 text: lastUserRequest,
                 timestamp: new Date().toISOString()
             })
