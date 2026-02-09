@@ -1,0 +1,500 @@
+{
+  "requests": [
+    {
+      "timestamp": "2025-07-01T09:15:23",
+      "text": "What time do you close today?"
+    },
+    {
+      "timestamp": "2025-07-01T10:30:45",
+      "text": "I need to refill my blood pressure medication, metoprolol 50mg"
+    },
+    {
+      "timestamp": "2025-07-01T14:22:17",
+      "text": "Do you have the flu vaccine available?"
+    },
+    {
+      "timestamp": "2025-07-02T08:45:32",
+      "text": "Can I pick up my prescription for amoxicillin today?"
+    },
+    {
+      "timestamp": "2025-07-02T11:18:56",
+      "text": "What are your hours on Sunday?"
+    },
+    {
+      "timestamp": "2025-07-02T16:33:41",
+      "text": "I'm having trouble opening my prescription bottle, can you help?"
+    },
+    {
+      "timestamp": "2025-07-03T09:12:08",
+      "text": "Is my insulin prescription ready for pickup?"
+    },
+    {
+      "timestamp": "2025-07-03T13:27:19",
+      "text": "Do you accept my insurance, Blue Cross Blue Shield?"
+    },
+    {
+      "timestamp": "2025-07-03T17:44:52",
+      "text": "I lost my medication, can I get an emergency refill?"
+    },
+    {
+      "timestamp": "2025-07-04T10:15:37",
+      "text": "Are you open on July 4th?"
+    },
+    {
+      "timestamp": "2025-07-04T15:22:14",
+      "text": "Can you transfer my prescription from CVS?"
+    },
+    {
+      "timestamp": "2025-07-05T08:55:29",
+      "text": "What's the generic version of Lipitor?"
+    },
+    {
+      "timestamp": "2025-07-05T12:41:03",
+      "text": "I need to update my address in your system"
+    },
+    {
+      "timestamp": "2025-07-05T16:18:47",
+      "text": "Can I get a 90-day supply of my diabetes medication?"
+    },
+    {
+      "timestamp": "2025-07-06T09:33:21",
+      "text": "Do you offer medication synchronization?"
+    },
+    {
+      "timestamp": "2025-07-06T14:07:58",
+      "text": "I'm pregnant, is my acne medication safe to continue?"
+    },
+    {
+      "timestamp": "2025-07-06T18:25:12",
+      "text": "What's the cost of my prescription without insurance?"
+    },
+    {
+      "timestamp": "2025-07-07T07:48:36",
+      "text": "Can you check if my doctor sent over a new prescription?"
+    },
+    {
+      "timestamp": "2025-07-07T11:52:41",
+      "text": "I need to pick up my child's antibiotics"
+    },
+    {
+      "timestamp": "2025-07-07T15:19:28",
+      "text": "Do you have any coupons for my medication?"
+    },
+    {
+      "timestamp": "2025-07-08T08:41:15",
+      "text": "Can I speak to the pharmacist about drug interactions?"
+    },
+    {
+      "timestamp": "2025-07-08T12:56:42",
+      "text": "Is there a generic available for my brand name drug?"
+    },
+    {
+      "timestamp": "2025-07-08T17:13:29",
+      "text": "I need to refill my inhaler prescription"
+    },
+    {
+      "timestamp": "2025-07-09T09:24:08",
+      "text": "Can you deliver my medications to my home?"
+    },
+    {
+      "timestamp": "2025-07-09T13:37:54",
+      "text": "What time does the pharmacy close on weekdays?"
+    },
+    {
+      "timestamp": "2025-07-09T16:42:17",
+      "text": "I'm traveling, can I get an early refill?"
+    },
+    {
+      "timestamp": "2025-07-10T08:18:33",
+      "text": "Do you offer immunizations besides flu shots?"
+    },
+    {
+      "timestamp": "2025-07-10T12:29:46",
+      "text": "My prescription bottle says no refills remaining, what do I do?"
+    },
+    {
+      "timestamp": "2025-07-10T15:51:22",
+      "text": "Can I pay for my prescription over the phone?"
+    },
+    {
+      "timestamp": "2025-07-11T09:06:19",
+      "text": "Is my pain medication ready for pickup?"
+    },
+    {
+      "timestamp": "2025-07-11T14:23:37",
+      "text": "Do you have blood pressure monitors for sale?"
+    },
+    {
+      "timestamp": "2025-07-11T18:14:55",
+      "text": "Can someone else pick up my prescription for me?"
+    },
+    {
+      "timestamp": "2025-07-12T08:37:41",
+      "text": "I need to change my prescription pickup time"
+    },
+    {
+      "timestamp": "2025-07-12T11:48:26",
+      "text": "What's the difference between immediate and extended release?"
+    },
+    {
+      "timestamp": "2025-07-12T16:31:08",
+      "text": "Can you check my insurance copay amount?"
+    },
+    {
+      "timestamp": "2025-07-13T09:55:14",
+      "text": "I'm experiencing side effects from my new medication"
+    },
+    {
+      "timestamp": "2025-07-13T13:22:47",
+      "text": "Do you offer medication therapy management?"
+    },
+    {
+      "timestamp": "2025-07-13T17:39:23",
+      "text": "Can I get a print out of my medication history?"
+    },
+    {
+      "timestamp": "2025-07-14T08:12:59",
+      "text": "Is there a cheaper alternative to my current medication?"
+    },
+    {
+      "timestamp": "2025-07-14T12:45:31",
+      "text": "I need to update my emergency contact information"
+    },
+    {
+      "timestamp": "2025-07-14T16:58:16",
+      "text": "Can you help me understand how to take my new medication?"
+    },
+    {
+      "timestamp": "2025-07-15T09:21:42",
+      "text": "Do you have automatic refill services?"
+    },
+    {
+      "timestamp": "2025-07-15T14:08:28",
+      "text": "I need to cancel a prescription order"
+    },
+    {
+      "timestamp": "2025-07-15T18:35:07",
+      "text": "What's your return policy for unused medications?"
+    },
+    {
+      "timestamp": "2025-07-16T08:49:53",
+      "text": "Can you check if my prescription is covered by my insurance?"
+    },
+    {
+      "timestamp": "2025-07-16T12:16:34",
+      "text": "I need to speak to someone about a billing issue"
+    },
+    {
+      "timestamp": "2025-07-16T15:43:21",
+      "text": "Do you offer drive-through service?"
+    },
+    {
+      "timestamp": "2025-07-17T09:27:48",
+      "text": "Can I get a consultation about over-the-counter medications?"
+    },
+    {
+      "timestamp": "2025-07-17T13:54:12",
+      "text": "I need to pick up my heart medication urgently"
+    },
+    {
+      "timestamp": "2025-07-17T17:11:36",
+      "text": "What are your holiday hours?"
+    },
+    {
+      "timestamp": "2025-07-18T08:38:24",
+      "text": "Can you compound a special medication for me?"
+    },
+    {
+      "timestamp": "2025-07-18T11:59:18",
+      "text": "I'm confused about my dosing schedule"
+    },
+    {
+      "timestamp": "2025-07-18T15:26:45",
+      "text": "Do you accept GoodRx coupons?"
+    },
+    {
+      "timestamp": "2025-07-19T09:14:32",
+      "text": "Can I get my prescription filled partially today?"
+    },
+    {
+      "timestamp": "2025-07-19T12:47:59",
+      "text": "I need to transfer my prescription to another pharmacy"
+    },
+    {
+      "timestamp": "2025-07-19T16:33:17",
+      "text": "What's the status of my prescription order?"
+    },
+    {
+      "timestamp": "2025-07-20T08:56:41",
+      "text": "Can you help me find a medication I can't remember the name of?"
+    },
+    {
+      "timestamp": "2025-07-20T14:19:26",
+      "text": "I need to refill my anxiety medication"
+    },
+    {
+      "timestamp": "2025-07-20T18:42:08",
+      "text": "Do you offer text reminders for prescription pickups?"
+    },
+    {
+      "timestamp": "2025-07-21T09:08:55",
+      "text": "Can I get my blood pressure checked here?"
+    },
+    {
+      "timestamp": "2025-07-21T13:31:42",
+      "text": "I lost my insurance card, can I still pick up my prescription?"
+    },
+    {
+      "timestamp": "2025-07-21T17:54:19",
+      "text": "What's the expiration date on my current prescription?"
+    },
+    {
+      "timestamp": "2025-07-22T08:17:37",
+      "text": "Can you check if there are any recalls on my medication?"
+    },
+    {
+      "timestamp": "2025-07-22T12:44:51",
+      "text": "I need to update my phone number in your system"
+    },
+    {
+      "timestamp": "2025-07-22T16:21:28",
+      "text": "Do you have any samples of my new medication?"
+    },
+    {
+      "timestamp": "2025-07-23T09:39:14",
+      "text": "Can I get a flu shot and pick up my prescription at the same time?"
+    },
+    {
+      "timestamp": "2025-07-23T14:02:47",
+      "text": "I'm having trouble affording my medication, what options do I have?"
+    },
+    {
+      "timestamp": "2025-07-23T18:25:33",
+      "text": "Can you explain the difference between brand and generic drugs?"
+    },
+    {
+      "timestamp": "2025-07-24T08:48:21",
+      "text": "I need to refill my allergy medication before the season starts"
+    },
+    {
+      "timestamp": "2025-07-24T12:15:39",
+      "text": "Do you offer medication adherence packaging?"
+    },
+    {
+      "timestamp": "2025-07-24T15:52:16",
+      "text": "Can I speak to a pharmacist about vitamin interactions?"
+    },
+    {
+      "timestamp": "2025-07-25T09:26:43",
+      "text": "I need to pick up my thyroid medication"
+    },
+    {
+      "timestamp": "2025-07-25T13:49:28",
+      "text": "What's the wait time for new prescriptions today?"
+    },
+    {
+      "timestamp": "2025-07-25T17:16:54",
+      "text": "Can you help me set up automatic payments?"
+    },
+    {
+      "timestamp": "2025-07-26T08:33:12",
+      "text": "I need to get my child's ADHD medication refilled"
+    },
+    {
+      "timestamp": "2025-07-26T11:57:38",
+      "text": "Do you offer mail order services?"
+    },
+    {
+      "timestamp": "2025-07-26T15:24:15",
+      "text": "Can I get a second opinion on my medication from your pharmacist?"
+    },
+    {
+      "timestamp": "2025-07-27T09:41:29",
+      "text": "I need to change my preferred pickup location"
+    },
+    {
+      "timestamp": "2025-07-27T14:08:46",
+      "text": "What's the proper way to dispose of expired medications?"
+    },
+    {
+      "timestamp": "2025-07-27T18:31:22",
+      "text": "Can you check if my doctor's office sent my prescription electronically?"
+    },
+    {
+      "timestamp": "2025-07-28T08:54:17",
+      "text": "I need help understanding my medication label"
+    },
+    {
+      "timestamp": "2025-07-28T12:21:35",
+      "text": "Do you offer diabetic supplies and testing strips?"
+    },
+    {
+      "timestamp": "2025-07-28T16:48:49",
+      "text": "Can I get my prescription filled at a different location?"
+    },
+    {
+      "timestamp": "2025-07-29T09:12:26",
+      "text": "I need to refill my cholesterol medication"
+    },
+    {
+      "timestamp": "2025-07-29T13:39:41",
+      "text": "What are the storage requirements for my medication?"
+    },
+    {
+      "timestamp": "2025-07-29T17:06:58",
+      "text": "Can you help me find a patient assistance program?"
+    },
+    {
+      "timestamp": "2025-07-30T08:29:33",
+      "text": "I need to speak to someone about a medication error"
+    },
+    {
+      "timestamp": "2025-07-30T11:56:19",
+      "text": "Do you offer consultation services for new medications?"
+    },
+    {
+      "timestamp": "2025-07-30T15:23:44",
+      "text": "Can I get my prescription history sent to my new doctor?"
+    },
+    {
+      "timestamp": "2025-07-31T09:47:52",
+      "text": "I need to update my insurance information"
+    },
+    {
+      "timestamp": "2025-07-31T14:14:28",
+      "text": "What's the difference between taking medication with or without food?"
+    },
+    {
+      "timestamp": "2025-07-31T18:41:07",
+      "text": "Can you check if there are any drug interactions with my supplements?"
+    },
+    {
+      "timestamp": "2025-08-01T08:18:43",
+      "text": "I need to pick up my prescription before you close"
+    },
+    {
+      "timestamp": "2025-08-01T12:45:21",
+      "text": "Do you offer senior citizen discounts?"
+    },
+    {
+      "timestamp": "2025-08-01T16:12:36",
+      "text": "Can I get a vaccination record for my immunizations?"
+    },
+    {
+      "timestamp": "2025-08-02T09:35:14",
+      "text": "I need help choosing the right over-the-counter pain reliever"
+    },
+    {
+      "timestamp": "2025-08-02T13:02:49",
+      "text": "What's your policy on prescription returns?"
+    },
+    {
+      "timestamp": "2025-08-02T17:29:27",
+      "text": "Can you help me understand my insurance formulary?"
+    },
+    {
+      "timestamp": "2025-08-03T08:51:38",
+      "text": "I need to refill my depression medication"
+    },
+    {
+      "timestamp": "2025-08-03T12:18:55",
+      "text": "Do you have a mobile app for prescription management?"
+    },
+    {
+      "timestamp": "2025-08-03T15:45:12",
+      "text": "Can I schedule a medication review appointment?"
+    },
+    {
+      "timestamp": "2025-08-04T09:08:29",
+      "text": "I need to pick up my migraine medication"
+    },
+    {
+      "timestamp": "2025-08-04T13:35:47",
+      "text": "What are the side effects I should watch for with my new medication?"
+    },
+    {
+      "timestamp": "2025-08-04T17:02:23",
+      "text": "Can you help me find a less expensive alternative?"
+    },
+    {
+      "timestamp": "2025-08-05T08:25:18",
+      "text": "I need to transfer a prescription from out of state"
+    },
+    {
+      "timestamp": "2025-08-05T11:52:34",
+      "text": "Do you offer medication counseling services?"
+    },
+    {
+      "timestamp": "2025-08-05T15:19:51",
+      "text": "Can I get my prescription filled in smaller quantities?"
+    },
+    {
+      "timestamp": "2025-08-06T09:42:17",
+      "text": "I need help setting up my pill organizer"
+    },
+    {
+      "timestamp": "2025-08-06T14:09:32",
+      "text": "What's the best time to take my blood pressure medication?"
+    },
+    {
+      "timestamp": "2025-08-06T18:36:48",
+      "text": "Can you check if my prescription is ready for pickup?"
+    },
+    {
+      "timestamp": "2025-08-07T08:59:25",
+      "text": "I need to refill my asthma inhaler"
+    },
+    {
+      "timestamp": "2025-08-07T12:26:41",
+      "text": "Do you accept manufacturer coupons?"
+    },
+    {
+      "timestamp": "2025-08-07T16:53:58",
+      "text": "Can I get a copy of my prescription receipt?"
+    },
+    {
+      "timestamp": "2025-08-08T09:16:34",
+      "text": "I need to speak to someone about my medication not working"
+    },
+    {
+      "timestamp": "2025-08-08T13:43:52",
+      "text": "What are your hours during the weekend?"
+    },
+    {
+      "timestamp": "2025-08-08T17:10:19",
+      "text": "Can you help me understand my prescription drug plan?"
+    },
+    {
+      "timestamp": "2025-08-09T08:33:46",
+      "text": "I need to pick up my antibiotic prescription"
+    },
+    {
+      "timestamp": "2025-08-09T12:00:28",
+      "text": "Do you offer home delivery for elderly patients?"
+    },
+    {
+      "timestamp": "2025-08-09T15:27:45",
+      "text": "Can I get my prescription filled even if it expired recently?"
+    },
+    {
+      "timestamp": "2025-08-10T09:50:23",
+      "text": "I need help understanding my medication adherence report"
+    },
+    {
+      "timestamp": "2025-08-10T14:17:39",
+      "text": "What's the protocol for missed doses of my medication?"
+    },
+    {
+      "timestamp": "2025-08-10T18:44:56",
+      "text": "Can you check if there are any manufacturer rebates available?"
+    },
+    {
+      "timestamp": "2025-08-11T08:07:42",
+      "text": "I need to refill my seizure medication urgently"
+    },
+    {
+      "timestamp": "2025-08-11T11:34:18",
+      "text": "Do you offer medication synchronization for multiple prescriptions?"
+    }
+  ]
+}

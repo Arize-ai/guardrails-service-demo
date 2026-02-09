@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardrails Chat Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Guardrails Chat Interface</h1>
+            <div class="threshold-controls">
+                <div class="threshold-control">
+                    <label for="relevance-threshold">
+                        Relevance Threshold: <span id="relevance-threshold-value">0.80</span>
+                    </label>
+                    <input type="range" id="relevance-threshold" min="0" max="1" step="0.05" value="0.80">
+                </div>
+                <div class="threshold-control">
+                    <label for="malicious-threshold">
+                        Malicious Threshold: <span id="malicious-threshold-value">0.10</span>
+                    </label>
+                    <input type="range" id="malicious-threshold" min="0" max="1" step="0.05" value="0.10">
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="chat-section">
+                <div class="chat-header">
+                    <h2>Chat</h2>
+                    <button id="clear-chat" class="btn btn-secondary">Clear Chat</button>
+                </div>
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <textarea id="message-input" placeholder="Type your message here..." rows="3"></textarea>
+                    <div class="input-actions">
+                        <button id="send-message" class="btn btn-primary">Send Message</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="guardrails-section">
+                <div class="guardrails-panel">
+                    <h3>Latest Detection Scores</h3>
+
+                    <div class="detection-scores">
+                        <div class="score-card relevance-card">
+                            <h4>🔍 Relevance Detection</h4>
+                            <div id="relevance-scores" class="scores-content">
+                                <p class="no-data">No request analyzed yet</p>
+                            </div>
+                        </div>
+
+                        <div class="score-card malicious-card">
+                            <h4>🛡️ Malicious Detection</h4>
+                            <div id="malicious-scores" class="scores-content">
+                                <p class="no-data">No request analyzed yet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions-section">
+                        <h4>Add Last Request to Baseline</h4>
+                        <button id="add-last-to-malicious" class="btn btn-danger btn-full" disabled>
+                            Add Last Request to Malicious Baseline
+                        </button>
+                        <button id="add-last-to-relevant" class="btn btn-success btn-full" disabled>
+                            Add Last Request to Relevant Baseline
+                        </button>
+                    </div>
+
+                    <div class="stats-section">
+                        <h4>Database Statistics</h4>
+                        <div id="stats-display">
+                            <p>Loading statistics...</p>
+                        </div>
+                        <button id="refresh-stats" class="btn btn-secondary btn-full">Refresh Stats</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+
+  guardrails-service:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - ANOMALY_THRESHOLD=${ANOMALY_THRESHOLD:-0.7}
+      - MALICIOUS_THRESHOLD=${MALICIOUS_THRESHOLD:-0.25}
+      - ANOMALY_COMPARE_TO=${ANOMALY_COMPARE_TO:-10}
+      - MALICIOUS_COMPARE_TO=${MALICIOUS_COMPARE_TO:-10}
+      - ARIZE_API_KEY=${ARIZE_API_KEY}
+      - ARIZE_SPACE_ID=${ARIZE_SPACE_ID}
+      - ARIZE_PROJECT_NAME=${ARIZE_PROJECT_NAME}
+      - ARIZE_ENDPOINT=${ARIZE_ENDPOINT}
+      - ANONYMIZED_TELEMETRY=False
+      - CHROMA_TELEMETRY_DISABLED=true
+    volumes:
+      - ./src/guardrails_service:/app/src/guardrails_service
+    command: uv run uvicorn src.guardrails_service.server:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  chat-service:
+    build: .
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+    environment:
+      - GUARDRAILS_API_URL=http://guardrails-service:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ARIZE_API_KEY=${ARIZE_API_KEY}
+      - ARIZE_SPACE_ID=${ARIZE_SPACE_ID}
+      - ARIZE_PROJECT_NAME=${ARIZE_PROJECT_NAME}
+      - ARIZE_ENDPOINT=${ARIZE_ENDPOINT}
+    volumes:
+      - ./src/agent:/app/src/agent
+    command: uv run uvicorn src.agent.server:app --host 0.0.0.0 --port 8001 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      guardrails-service:
+        condition: service_healthy
+
+  ui-service:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - AGENT_API_URL=http://chat-service:8001
+      - GUARDRAILS_API_URL=http://guardrails-service:8000
+      - ARIZE_API_KEY=${ARIZE_API_KEY}
+      - ARIZE_SPACE_ID=${ARIZE_SPACE_ID}
+      - ARIZE_PROJECT_NAME=${ARIZE_PROJECT_NAME}
+      - ARIZE_ENDPOINT=${ARIZE_ENDPOINT}
+    volumes:
+      - ./src/ui:/app/src/ui
+    command: uv run python -m flask --app src.ui.app run --host 0.0.0.0 --port 5000
+    depends_on:
+      chat-service:
+        condition: service_started
