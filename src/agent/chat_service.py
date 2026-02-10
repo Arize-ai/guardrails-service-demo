@@ -31,10 +31,16 @@ class GraphState(TypedDict):
 
 
 class ChatService:
+    FALLBACK_RESPONSE = "Let me check with a Pharmacist and get back to you"
+
     def __init__(self):
-        self.agent = ChatOpenAI(
-            model="gpt-4o", temperature=0.0, max_completion_tokens=250
-        )
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+        if openai_api_key:
+            self.agent = ChatOpenAI(
+                model="gpt-4o", temperature=0.0, max_completion_tokens=250
+            )
+        else:
+            self.agent = None
         self.guardrails_api_url = os.getenv(
             "GUARDRAILS_API_URL", "http://localhost:8000"
         )
@@ -197,40 +203,56 @@ class ChatService:
                 SpanAttributes.INPUT_VALUE: state["user_input"],
             },
         ) as span:
-            result = {}
+            metadata = {}
             try:
                 input_message = HumanMessage(content=state["user_input"])
-                result = await self.agent.ainvoke([input_message])
-                state["final_response"] = str(result.content)
-                state["messages"].extend(
-                    [input_message, AIMessage(content=state["final_response"])]
-                )
-                span.set_attribute(
-                    SpanAttributes.LLM_TOKEN_COUNT_PROMPT,
-                    int(result.response_metadata["token_usage"]["prompt_tokens"]),
-                )
-                span.set_attribute(
-                    SpanAttributes.LLM_TOKEN_COUNT_COMPLETION,
-                    int(result.response_metadata["token_usage"]["completion_tokens"]),
-                )
-                span.set_attribute(
-                    SpanAttributes.LLM_TOKEN_COUNT_TOTAL,
-                    int(result.response_metadata["token_usage"]["total_tokens"]),
-                )
-                span.set_attribute(
-                    SpanAttributes.LLM_MODEL_NAME,
-                    result.response_metadata["model_name"],
-                )
+
+                if self.agent is None:
+                    # No OpenAI key — use hardcoded fallback
+                    state["final_response"] = self.FALLBACK_RESPONSE
+                    state["messages"].extend(
+                        [input_message, AIMessage(content=state["final_response"])]
+                    )
+                    prompt_tokens = len(state["user_input"].split())
+                    completion_tokens = len(self.FALLBACK_RESPONSE.split())
+                    span.set_attribute(SpanAttributes.LLM_TOKEN_COUNT_PROMPT, prompt_tokens)
+                    span.set_attribute(SpanAttributes.LLM_TOKEN_COUNT_COMPLETION, completion_tokens)
+                    span.set_attribute(SpanAttributes.LLM_TOKEN_COUNT_TOTAL, prompt_tokens + completion_tokens)
+                    span.set_attribute(SpanAttributes.LLM_MODEL_NAME, "Manual")
+                    metadata = {"model_name": "Manual", "mode": "fallback"}
+                else:
+                    result = await self.agent.ainvoke([input_message])
+                    state["final_response"] = str(result.content)
+                    state["messages"].extend(
+                        [input_message, AIMessage(content=state["final_response"])]
+                    )
+                    span.set_attribute(
+                        SpanAttributes.LLM_TOKEN_COUNT_PROMPT,
+                        int(result.response_metadata["token_usage"]["prompt_tokens"]),
+                    )
+                    span.set_attribute(
+                        SpanAttributes.LLM_TOKEN_COUNT_COMPLETION,
+                        int(result.response_metadata["token_usage"]["completion_tokens"]),
+                    )
+                    span.set_attribute(
+                        SpanAttributes.LLM_TOKEN_COUNT_TOTAL,
+                        int(result.response_metadata["token_usage"]["total_tokens"]),
+                    )
+                    span.set_attribute(
+                        SpanAttributes.LLM_MODEL_NAME,
+                        result.response_metadata["model_name"],
+                    )
+                    metadata = result.response_metadata
 
             except Exception as e:
                 span.set_status(trace.Status(trace.StatusCode.ERROR, str(e)))
                 state["final_response"] = (
-                    f"I'm sorry, but I cannot process your request at this time."
+                    "I'm sorry, but I cannot process your request at this time."
                 )
             finally:
                 span.set_attribute(SpanAttributes.OUTPUT_VALUE, state["final_response"])
                 span.set_attribute(
-                    SpanAttributes.METADATA, json.dumps(result.response_metadata)
+                    SpanAttributes.METADATA, json.dumps(metadata)
                 )
                 return state
 

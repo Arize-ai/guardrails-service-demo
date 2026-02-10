@@ -12,9 +12,10 @@ import os
 from phoenix.otel import register
 
 # Configure the Phoenix tracer
+# Tracing uses gRPC on port 4317; dataset client uses HTTP on port 6006
 tracer_provider = register(
     project_name=os.getenv("PHOENIX_PROJECT_NAME", "Guardrails Project"),
-    endpoint=os.getenv("PHOENIX_COLLECTOR_ENDPOINT", "http://localhost:6006"),
+    endpoint=os.getenv("PHOENIX_GRPC_ENDPOINT", "http://localhost:4317"),
 )
 
 chat_service = ChatService()

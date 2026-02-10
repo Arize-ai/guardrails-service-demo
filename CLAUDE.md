@@ -61,4 +61,4 @@ uv run mypy
 - `bin/bootstrap.sh` - Development environment setup script
 - `Dockerfile` - Production container configuration using uv
 - `docker-compose.yml` - Development environment setup
-- `.venv/` - Virtual environment directory (created by bootstrap)
+- `.env.example` - Setup template for environment variables

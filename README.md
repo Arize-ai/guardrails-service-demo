@@ -44,6 +44,7 @@ The platform consists of four integrated services:
 
 - Python 3.11
 - [uv](https://github.com/astral-sh/uv) package manager
+- OpenAI API key for LLM calls (Optional, canned response otherwise)
 - Docker (optional, for containerized deployment)
 
 ### Local Development Setup
