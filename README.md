@@ -235,11 +235,14 @@ The anomaly detection system identifies requests that are **dissimilar** to norm
       {
         "timestamp": "2025-08-12T10:00:00",
         "text": "The first of many normal requests"
-      },
-      ...
+      }
     ]
   }
   ```
+- **Parameters**:
+  - `requests` *(array, required)*: List of baseline records, each containing:
+    - `text` *(string, required)*: Text content of the request.
+    - `timestamp` *(datetime, optional)*: Request timestamp. Defaults to current time.
 
 ##### Add Single Entry to Baseline
 - **POST** `/anomaly/baseline/add`
@@ -251,13 +254,16 @@ The anomaly detection system identifies requests that are **dissimilar** to norm
     "text": "A new request to add to the baseline"
   }
   ```
+- **Parameters**:
+  - `text` *(string, required)*: Text content of the request.
+  - `timestamp` *(datetime, optional)*: Request timestamp. Defaults to current time.
 
 ##### Retrieve Baseline Entries
 - **GET** `/anomaly/baseline`
 - Retrieve baseline entries with optional date filtering
-- **Query Parameters**:
-  - `before` (optional): Get entries before this date (exclusive)
-  - `after` (optional): Get entries after this date (inclusive)
+- **Parameters**:
+  - `before` *(datetime, optional)*: Get entries before this date (exclusive). Query parameter.
+  - `after` *(datetime, optional)*: Get entries after this date (inclusive). Query parameter.
 - **Examples**:
   ```bash
   # Get all entries
@@ -279,19 +285,19 @@ The anomaly detection system identifies requests that are **dissimilar** to norm
 - **Request Body**:
   ```json
   {
-    "before": "2025-08-01T00:00:00",  // optional
-    "after": "2025-07-01T00:00:00"   // optional
+    "before": "2025-08-01T00:00:00",
+    "after": "2025-07-01T00:00:00"
   }
   ```
-- **Filtering Logic**:
-  - No dates: Remove all entries
-  - `before` only: Remove entries before date (exclusive)
-  - `after` only: Remove entries after date (inclusive)
-  - Both dates: Remove entries between dates (after inclusive, before exclusive)
+- **Parameters**:
+  - `before` *(datetime, optional)*: Remove entries before this date (exclusive).
+  - `after` *(datetime, optional)*: Remove entries after this date (inclusive).
+  - If no dates provided, all entries are removed. If both provided, removes entries between the dates.
 
 ##### Baseline Statistics
 - **GET** `/anomaly/baseline/stats`
 - Get statistics about the baseline dataset
+- **Parameters**: None.
 - **Response**:
   ```json
   {
@@ -309,14 +315,16 @@ The anomaly detection system identifies requests that are **dissimilar** to norm
   ```json
   {
     "text": "Request text to analyze",
-    "timestamp": "2025-08-12T10:00:00",  // optional
-    "threshold": 0.7,                   // optional, defaults to env ANOMALY_THRESHOLD (0.7)
-    "compare_to": 10                    // optional, defaults to env COMPARE_TO (10)
+    "timestamp": "2025-08-12T10:00:00",
+    "threshold": 0.7,
+    "compare_to": 10
   }
   ```
 - **Parameters**:
-  - `threshold`: Similarity threshold for anomaly detection (0.0-1.0). Lower values are more sensitive.
-  - `compare_to`: Number of similar baseline vectors to compare against (minimum 1).
+  - `text` *(string, required)*: Text content of the request to analyze.
+  - `timestamp` *(datetime, optional)*: Request timestamp. Defaults to current time.
+  - `threshold` *(float, optional)*: Similarity threshold for anomaly detection (0.0-1.0). Lower values are more sensitive. Defaults to env `ANOMALY_THRESHOLD` (`0.7`).
+  - `compare_to` *(int, optional)*: Number of similar baseline vectors to compare against (minimum 1). Defaults to env `ANOMALY_COMPARE_TO` (`10`).
 - **Response**:
   ```json
   {
@@ -356,11 +364,14 @@ The malicious detection system identifies requests that are **similar** to known
       {
         "timestamp": "2025-08-12T10:00:00",
         "text": "'; DROP TABLE users; --"
-      },
-      ...
+      }
     ]
   }
   ```
+- **Parameters**:
+  - `requests` *(array, required)*: List of malicious baseline records, each containing:
+    - `text` *(string, required)*: Text content of the malicious request.
+    - `timestamp` *(datetime, optional)*: Request timestamp. Defaults to current time.
 
 ##### Add Single Entry to Malicious Baseline
 - **POST** `/malicious/baseline/add`
@@ -372,13 +383,16 @@ The malicious detection system identifies requests that are **similar** to known
     "text": "<script>alert('XSS attack')</script>"
   }
   ```
+- **Parameters**:
+  - `text` *(string, required)*: Text content of the malicious request.
+  - `timestamp` *(datetime, optional)*: Request timestamp. Defaults to current time.
 
 ##### Retrieve Malicious Baseline Entries
 - **GET** `/malicious/baseline`
 - Retrieve malicious baseline entries with optional date filtering
-- **Query Parameters**:
-  - `before` (optional): Get entries before this date (exclusive)
-  - `after` (optional): Get entries after this date (inclusive)
+- **Parameters**:
+  - `before` *(datetime, optional)*: Get entries before this date (exclusive). Query parameter.
+  - `after` *(datetime, optional)*: Get entries after this date (inclusive). Query parameter.
 - **Examples**:
   ```bash
   # Get all malicious entries
@@ -400,19 +414,19 @@ The malicious detection system identifies requests that are **similar** to known
 - **Request Body**:
   ```json
   {
-    "before": "2025-08-01T00:00:00",  // optional
-    "after": "2025-07-01T00:00:00"   // optional
+    "before": "2025-08-01T00:00:00",
+    "after": "2025-07-01T00:00:00"
   }
   ```
-- **Filtering Logic**:
-  - No dates: Remove all entries
-  - `before` only: Remove entries before date (exclusive)
-  - `after` only: Remove entries after date (inclusive)
-  - Both dates: Remove entries between dates (after inclusive, before exclusive)
+- **Parameters**:
+  - `before` *(datetime, optional)*: Remove entries before this date (exclusive).
+  - `after` *(datetime, optional)*: Remove entries after this date (inclusive).
+  - If no dates provided, all entries are removed. If both provided, removes entries between the dates.
 
 ##### Malicious Baseline Statistics
 - **GET** `/malicious/baseline/stats`
 - Get statistics about the malicious baseline dataset
+- **Parameters**: None.
 - **Response**:
   ```json
   {
@@ -430,14 +444,16 @@ The malicious detection system identifies requests that are **similar** to known
   ```json
   {
     "text": "Request text to analyze",
-    "timestamp": "2025-08-12T10:00:00",  // optional
-    "threshold": 0.25,                  // optional, defaults to env MALICIOUS_THRESHOLD (0.25)
-    "compare_to": 10                    // optional, defaults to env MALICIOUS_COMPARE_TO (10)
+    "timestamp": "2025-08-12T10:00:00",
+    "threshold": 0.25,
+    "compare_to": 10
   }
   ```
 - **Parameters**:
-  - `threshold`: Similarity threshold for malicious detection (0.0-1.0). Lower values are more sensitive.
-  - `compare_to`: Number of similar malicious vectors to compare against (minimum 1).
+  - `text` *(string, required)*: Text content of the request to analyze.
+  - `timestamp` *(datetime, optional)*: Request timestamp. Defaults to current time.
+  - `threshold` *(float, optional)*: Similarity threshold for malicious detection (0.0-1.0). Lower values are more sensitive. Defaults to env `MALICIOUS_THRESHOLD` (`0.25`).
+  - `compare_to` *(int, optional)*: Number of similar malicious vectors to compare against (minimum 1). Defaults to env `MALICIOUS_COMPARE_TO` (`10`).
 - **Response**:
   ```json
   {
@@ -486,10 +502,17 @@ The Chat Agent Service provides an intelligent conversational interface with bui
   ```json
   {
     "message": "What medications do you have available?",
-    "anomaly_threshold": 0.7,      // optional, defaults to env variable
-    "malicious_threshold": 0.25    // optional, defaults to env variable
+    "system_prompt": null,
+    "anomaly_threshold": 0.8,
+    "malicious_threshold": 0.1
   }
   ```
+- **Parameters**:
+  - `message` *(string, required)*: The user message to send to the chat agent.
+  - `system_prompt` *(string, optional)*: Custom system prompt to guide the agent's behavior. Defaults to `null`.
+  - `anomaly_threshold` *(float, optional)*: Similarity threshold for anomaly detection (0.0-1.0). Higher values are more permissive. Defaults to `0.8`.
+  - `malicious_threshold` *(float, optional)*: Similarity threshold for malicious content detection (0.0-1.0). Lower values are more sensitive. Defaults to `0.1`.
+
 - **Response**:
   ```json
   {
@@ -518,6 +541,7 @@ The UI Service provides dataset management capabilities via Phoenix integration.
 
 ##### Get Dataset Information
 - **GET** `/datasets/info` - Get information about Phoenix datasets
+- **Parameters**: None. Returns info for the configured `pharmacy-anomaly-baseline` and `pharmacy-malicious-baseline` datasets.
 - **Response**:
   ```json
   {
@@ -536,6 +560,7 @@ The UI Service provides dataset management capabilities via Phoenix integration.
 
 ##### Sync Datasets
 - **POST** `/datasets/sync` - Manually sync Phoenix datasets to vector store
+- **Parameters**: None. Syncs both the anomaly and malicious datasets from Phoenix to the vector store.
 - **Response**:
   ```json
   {
@@ -552,8 +577,12 @@ The UI Service provides dataset management capabilities via Phoenix integration.
 - **Request Body**:
   ```json
   {
-    "dataset_type": "anomaly",  // or "malicious"
+    "dataset_type": "anomaly",
     "text": "What are your hours?",
     "timestamp": "2025-10-16T10:00:00"
   }
   ```
+- **Parameters**:
+  - `dataset_type` *(string, required)*: The type of dataset to add to. Must be `"anomaly"` or `"malicious"`.
+  - `text` *(string, required)*: The text content to add to the dataset.
+  - `timestamp` *(string, required)*: ISO 8601 timestamp for the entry.
