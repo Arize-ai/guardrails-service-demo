@@ -30,7 +30,7 @@ Configure the services using a `.env` file in the root directory. Copy `.env.exa
 
 #### Phoenix Tracing
 - `PHOENIX_COLLECTOR_ENDPOINT`: Phoenix OTLP endpoint (automatically configured in docker-compose)
-- `PHOENIX_GRPC_ENDPOINT`: Where to actually send the traces
+- `PHOENIX_GRPC_ENDPOINT`: Where to actually send the traces (automatically configured in docker-compose)
 
 #### Service URLs (automatically configured in docker-compose)
 - `AGENT_API_URL`: Chat agent service URL (default: http://localhost:8001)
@@ -41,17 +41,18 @@ Configure the services using a `.env` file in the root directory. Copy `.env.exa
 
 The docker deployed platform consists of four integrated services:
 
-1. **UI Service** (Port 5000): Interactive web interface for chatting and dataset management
-2. **Phoenix Dashboard** (Port 6006): Observability and tracing with Arize Phoenix
-3. **Chat Agent Service** (Port 8001): LangGraph-powered chat agent with automatic guardrails checking
-4. **Guardrails Service** (Port 8000): Core detection engine with dual anomaly and malicious content detection
+1. **UI Service**: Interactive web interface for chatting and dataset management
+2. **Phoenix Dashboard**: Observability and tracing with Arize Phoenix
+3. **Chat Agent Service**: LangGraph-powered chat agent with automatic guardrails checking
+4. **Guardrails Service**: Core detection engine with dual anomaly and malicious content detection
 
 #### Setup
 
 1. **Create a `.env` file from the example**:
    ```bash
    cp .env.example .env
-   # Edit .env and add your OPENAI_API_KEY
+   # Edit .env and add your OPENAI_API_KEY if you have one
+   # You can also update any of the defaults (listed above)
    ```
 
 2. **Build and run with docker-compose**:
@@ -67,12 +68,6 @@ The docker deployed platform consists of four integrated services:
 
    See the [API reference](docs/api-reference.md) for endpoint documentation.
 
-3. **Production Docker build**:
-   ```bash
-   docker build -t guardrails-service .
-   docker run -p 8000:8000 guardrails-service
-   ```
-
 #### Web Interface
 
 Access the interactive UI at `http://localhost:5000` to:
@@ -84,17 +79,13 @@ Access the interactive UI at `http://localhost:5000` to:
 
 ### Local Development Setup
 
-1. **Clone and setup environment**:
+1. **Setup environment**:
    ```bash
    ./bin/bootstrap.sh
-   ```
-
-2. **Activate virtual environment**:
-   ```bash
    source .venv/bin/activate
    ```
 
-3. **Run the service**:
+2. **Run the service**:
    ```bash
    uv run uvicorn guardrails_service.server:app --reload
    ```
@@ -109,7 +100,7 @@ The `examples/` directory contains a comprehensive Jupyter notebook that demonst
 
 1. **Install examples dependencies**:
    ```bash
-   uv sync --examples
+   uv sync --extra examples
    ```
 
 2. **Start Jupyter**:
