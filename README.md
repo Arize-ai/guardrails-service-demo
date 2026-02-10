@@ -32,11 +32,6 @@ Configure the services using a `.env` file in the root directory. Copy `.env.exa
 - `PHOENIX_COLLECTOR_ENDPOINT`: Phoenix OTLP endpoint (automatically configured in docker-compose)
 - `PHOENIX_GRPC_ENDPOINT`: Where to actually send the traces (automatically configured in docker-compose)
 
-#### Service URLs (automatically configured in docker-compose)
-- `AGENT_API_URL`: Chat agent service URL (default: http://localhost:8001)
-- `GUARDRAILS_API_URL`: Guardrails service URL (default: http://localhost:8000)
-- `PHOENIX_URL`: Phoenix UI URL (default: http://phoenix:6006)
-
 ### Docker Deployment
 
 The docker deployed platform consists of four integrated services:
