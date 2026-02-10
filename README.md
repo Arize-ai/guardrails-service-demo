@@ -1,15 +1,16 @@
 # Guardrails Service
 
-A comprehensive AI safety platform that combines anomaly detection, malicious content filtering, and an intelligent chat agent with real-time guardrails. The platform uses vector similarity analysis to detect unusual requests and malicious patterns, with Phoenix integration for observability and dataset management.
+A comprehensive AI safety platform that combines anomaly detection, malicious content filtering, and an intelligent chat agent with real-time guardrails. The platform uses vector similarity analysis to detect unusual requests and malicious patterns, with Arize integration for observability and dataset management.
 
 ## Architecture Overview
 
-The platform consists of four integrated services:
+The platform consists of three integrated services:
 
 1. **Guardrails Service** (Port 8000): Core detection engine with dual anomaly and malicious content detection
 2. **Chat Agent Service** (Port 8001): LangGraph-powered chat agent with automatic guardrails checking
 3. **UI Service** (Port 5000): Interactive web interface for chatting and dataset management
-4. **Phoenix Dashboard** (Port 6006): Observability and tracing with Arize Phoenix
+
+All services integrate with **Arize** (https://app.arize.com) for observability, tracing, and dataset management.
 
 ## Features
 
@@ -28,8 +29,8 @@ The platform consists of four integrated services:
 - **Blocked Request Handling**: Gracefully handles and explains blocked malicious or anomalous requests
 
 ### Observability & Management
-- **Phoenix Integration**: Full observability with Arize Phoenix for tracing and monitoring
-- **Dataset Synchronization**: Automatic sync between Phoenix datasets and vector store
+- **Arize Integration**: Full observability with Arize for tracing and monitoring
+- **Dataset Synchronization**: Automatic sync between Arize datasets and vector store
 - **Interactive UI**: Web-based interface for chatting with agent and managing datasets
 - **Dynamic Dataset Updates**: Add new examples to baseline datasets in real-time from the UI
 
@@ -80,9 +81,10 @@ The service will be available at `http://localhost:8000`
 
    This will start all services:
    - **UI Service**: http://localhost:5000
-   - **Phoenix Dashboard**: http://localhost:6006
    - **Agent API**: http://localhost:8001
    - **Guardrails API**: http://localhost:8000
+
+   View observability data at **Arize**: https://app.arize.com
 
 3. **Production Docker build**:
    ```bash
@@ -395,12 +397,12 @@ The Chat Agent Service provides an intelligent conversational interface with bui
 
 ## UI Service API
 
-The UI Service provides dataset management capabilities via Phoenix integration.
+The UI Service provides dataset management capabilities via Arize integration.
 
 ### Dataset Management Endpoints
 
 #### Get Dataset Information
-- **GET** `/datasets/info` - Get information about Phoenix datasets
+- **GET** `/datasets/info` - Get information about Arize datasets
 - **Response**:
   ```json
   {
@@ -418,20 +420,20 @@ The UI Service provides dataset management capabilities via Phoenix integration.
   ```
 
 #### Sync Datasets
-- **POST** `/datasets/sync` - Manually sync Phoenix datasets to vector store
+- **POST** `/datasets/sync` - Manually sync Arize datasets to vector store
 - **Response**:
   ```json
   {
     "status": "success",
     "results": {
-      "anomaly": "Loaded from Phoenix (100 records)",
-      "malicious": "Loaded from Phoenix (50 records)"
+      "anomaly": "Loaded from Arize (100 records)",
+      "malicious": "Loaded from Arize (50 records)"
     }
   }
   ```
 
 #### Add to Dataset
-- **POST** `/datasets/add` - Add an entry to a Phoenix dataset
+- **POST** `/datasets/add` - Add an entry to an Arize dataset
 - **Request Body**:
   ```json
   {
@@ -447,7 +449,7 @@ Access the interactive UI at `http://localhost:5000` to:
 - Chat with the AI agent with real-time guardrails
 - View detection scores for anomaly and malicious content
 - Add examples to datasets directly from the conversation
-- Sync Phoenix datasets with the vector store
+- Sync Arize datasets with the vector store
 - Monitor guardrail effectiveness in real-time
 
 ## How It Works
@@ -472,24 +474,24 @@ User Input → Check Malicious → Check Anomaly → Evaluate Guardrails
 3. **Evaluation**: Determines if request should be blocked
 4. **Response Generation**: Either generates helpful response or explains why request was blocked
 
-### Phoenix Integration
+### Arize Integration
 
-The platform integrates with Arize Phoenix for:
-- **Dataset Storage**: Baseline datasets are stored in Phoenix and synced to the vector store
+The platform integrates with Arize for:
+- **Dataset Storage**: Baseline datasets are stored in Arize and synced to the vector store
 - **Observability**: All LangChain/LangGraph operations are traced
-- **Dataset Management**: Add new examples through the UI, stored in Phoenix
+- **Dataset Management**: Add new examples through the UI, stored in Arize
 - **Monitoring**: View agent traces, guardrail decisions, and performance metrics
 
 ### Dataset Synchronization Flow
 
 ```
-Phoenix Dataset → DatasetManager → Vector Store (ChromaDB)
-                                         ↓
-                                 Guardrails Detection
+Arize Dataset → DatasetManager → Vector Store (ChromaDB)
+                                       ↓
+                               Guardrails Detection
 ```
 
 Datasets can be:
-- Loaded from Phoenix on service startup
+- Loaded from Arize on service startup
 - Synced manually via UI or API
 - Updated in real-time by adding examples from conversations
 
@@ -499,11 +501,16 @@ Configure the services using a `.env` file in the root directory. Copy `.env.exa
 
 ### Required
 - `OPENAI_API_KEY`: Your OpenAI API key for the chat agent
+- `ARIZE_API_KEY`: Your Arize API key for observability and dataset management
+- `ARIZE_SPACE_ID`: Your Arize space ID
+
+### Arize Configuration
+- `ARIZE_ENDPOINT`: Arize platform URL (default: https://app.arize.com/)
+- `ARIZE_PROJECT_NAME`: Project name in Arize (default: "Guardrails Project")
 
 ### Service URLs (automatically configured in docker-compose)
 - `AGENT_API_URL`: Chat agent service URL (default: http://localhost:8001)
 - `GUARDRAILS_API_URL`: Guardrails service URL (default: http://localhost:8000)
-- `PHOENIX_URL`: Phoenix UI URL (default: http://phoenix:6006)
 
 ### Anomaly Detection
 - `ANOMALY_THRESHOLD`: Detection threshold (default: 0.7)
@@ -515,9 +522,6 @@ Configure the services using a `.env` file in the root directory. Copy `.env.exa
 
 ### Model Configuration
 - `EMBEDDING_MODEL_NAME`: Sentence transformer model (default: "sentence-transformers/all-MiniLM-L6-v2")
-
-### Phoenix Tracing
-- `PHOENIX_COLLECTOR_ENDPOINT`: Phoenix OTLP endpoint (automatically configured in docker-compose)
 
 ## Usage Examples
 
@@ -535,7 +539,7 @@ The easiest way to experience the full platform is through the docker-compose se
 
 2. **Access the services**:
    - **Interactive UI**: http://localhost:5000 - Chat with the agent and manage datasets
-   - **Phoenix Dashboard**: http://localhost:6006 - View traces and observability data
+   - **Arize Dashboard**: https://app.arize.com - View traces and observability data
    - **Guardrails API**: http://localhost:8000/docs - Swagger UI for detection API
    - **Chat Agent API**: http://localhost:8001/docs - Swagger UI for chat agent
 
@@ -545,7 +549,7 @@ The easiest way to experience the full platform is through the docker-compose se
    - Start chatting with the agent - all messages are automatically screened
    - View real-time detection scores in the right panel
    - Add examples to datasets by clicking "Add to Anomaly Dataset" or "Add to Malicious Dataset"
-   - Monitor traces in Phoenix at http://localhost:6006
+   - Monitor traces in Arize at https://app.arize.com
 
 4. **Testing Guardrails**:
 
@@ -651,7 +655,7 @@ guardrails_service/
 │   │   └── models.py              # Chat request/response models
 │   └── ui/                        # Web UI service
 │       ├── app.py                 # Flask application
-│       ├── dataset_manager.py     # Phoenix dataset synchronization
+│       ├── dataset_manager.py     # Arize dataset synchronization
 │       ├── templates/             # HTML templates
 │       └── static/                # JavaScript and CSS
 ├── examples/
@@ -672,7 +676,7 @@ guardrails_service/
 - **LangChain**: LLM application framework
 - **ChromaDB**: Vector database for semantic similarity search
 - **Sentence Transformers**: Text embedding models
-- **Arize Phoenix**: Observability and tracing platform
+- **Arize**: Observability and tracing platform
 - **OpenAI GPT-4o**: Language model for chat responses
 - **Docker & Docker Compose**: Containerization and orchestration
 
