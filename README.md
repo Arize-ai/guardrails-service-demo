@@ -2,6 +2,8 @@
 
 A comprehensive AI safety platform that combines anomaly detection, malicious content filtering, and an intelligent chat agent with real-time guardrails. The platform uses vector similarity analysis to detect unusual requests and malicious patterns, with Phoenix integration for observability and dataset management.
 
+For a detailed walkthrough of the design and motivation, see the [Adaptive Guardrails for Agentic Applications](docs/guardrails-service-article.md) article.
+
 ## Quick Start
 
 ### Prerequisites
