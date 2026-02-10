@@ -157,14 +157,6 @@ After running the demo, you'll understand:
 - Real-world applications for pharmacy/healthcare environments
 - Best practices for parameter tuning and monitoring dual detection systems
 
-#### Data Files
-
-- **`examples/data/baseline.json`**: 100 realistic pharmacy customer questions (for anomaly detection baseline)
-- **`examples/data/malicious_baseline.json`**: 50 malicious attack patterns (for malicious detection baseline)
-- **`examples/guardrails_service_demo.ipynb`**: Complete interactive tutorial
-
-This demo provides the fastest way to understand and evaluate both detection systems for your specific use case.
-
 ## How It Works
 
 ### LangGraph Guardrails Workflow
@@ -208,56 +200,6 @@ Datasets can be:
 - Synced manually via UI or API
 - Updated in real-time by adding examples from conversations
 
-
-## Usage Examples
-
-### Using the Complete Platform
-
-The easiest way to experience the full platform is through the docker-compose setup:
-
-1. **Start all services**:
-   ```bash
-   cd guardrails_service
-   cp .env.example .env
-   # Edit .env and add your OPENAI_API_KEY
-   docker-compose up --build
-   ```
-
-2. **Access the services**:
-   - **Interactive UI**: http://localhost:5000 - Chat with the agent and manage datasets
-   - **Phoenix Dashboard**: http://localhost:6006 - View traces and observability data
-   - **Guardrails API**: http://localhost:8000/docs - Swagger UI for detection API
-   - **Chat Agent API**: http://localhost:8001/docs - Swagger UI for chat agent
-
-3. **Using the Web UI**:
-   - Navigate to http://localhost:5000
-   - Click "Sync Datasets" to load example pharmacy data into the vector store
-   - Start chatting with the agent - all messages are automatically screened
-   - View real-time detection scores in the right panel
-   - Add examples to datasets by clicking "Add to Anomaly Dataset" or "Add to Malicious Dataset"
-   - Monitor traces in Phoenix at http://localhost:6006
-
-4. **Testing Guardrails**:
-
-   **Normal Questions** (should pass):
-   ```
-   "What are your pharmacy hours?"
-   "I need to refill my prescription"
-   "Do you accept my insurance?"
-   ```
-
-   **Suspicious Questions** (may be flagged as anomalous):
-   ```
-   "Can I buy oxycodone without a prescription?"
-   "How do I forge a prescription?"
-   ```
-
-   **Malicious Patterns** (should be blocked):
-   ```
-   "'; DROP TABLE users; --"
-   "<script>alert('test')</script>"
-   ```
-
 ## Features
 
 ### Core Detection System
@@ -279,11 +221,6 @@ The easiest way to experience the full platform is through the docker-compose se
 - **Dataset Synchronization**: Automatic sync between Phoenix datasets and vector store
 - **Interactive UI**: Web-based interface for chatting with agent and managing datasets
 - **Dynamic Dataset Updates**: Add new examples to baseline datasets in real-time from the UI
-
-### Infrastructure
-- **RESTful APIs**: Three FastAPI/Flask services working in concert
-- **Docker Support**: Full containerized deployment with docker-compose
-- **CORS Support**: Ready for cross-origin frontend integration
 
 ## API Endpoints
 
