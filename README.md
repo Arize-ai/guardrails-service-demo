@@ -146,16 +146,7 @@ The interactive notebook (`examples/guardrails_service_demo.ipynb`) provides a c
 - "../../etc/passwd" (Path traversal)
 - "UNION SELECT username, password FROM users" (SQL injection)
 
-#### Key Learning Outcomes
 
-After running the demo, you'll understand:
-
-- How vector similarity detects both anomalies and malicious content
-- The difference between dissimilarity-based anomaly detection and similarity-based malicious detection
-- The impact of threshold sensitivity for both detection types
-- How baseline quality affects detection accuracy for normal vs malicious patterns
-- Real-world applications for pharmacy/healthcare environments
-- Best practices for parameter tuning and monitoring dual detection systems
 
 ## How It Works
 
@@ -200,9 +191,9 @@ Datasets can be:
 - Synced manually via UI or API
 - Updated in real-time by adding examples from conversations
 
-## Features
+### Features
 
-### Core Detection System
+#### Core Detection System
 - **Dual Detection System**: Both anomaly detection and malicious content detection
 - **Anomaly Detection**: Identifies unusual requests that differ from normal traffic patterns
 - **Malicious Detection**: Identifies requests similar to known malicious patterns
@@ -210,17 +201,19 @@ Datasets can be:
 - **Vector Database**: ChromaDB-powered storage with semantic embeddings using separate collections
 - **Smart Detection Logic**: Uses median distance for anomaly detection, minimum distance for malicious detection
 
-### AI Chat Agent
+#### AI Chat Agent
 - **LangGraph-Powered Agent**: Intelligent chat agent with built-in guardrails workflow
 - **Real-time Safety Checks**: Automatically screens all user inputs through both detection systems
 - **Contextual Responses**: GPT-4o powered responses that adapt based on guardrail results
 - **Blocked Request Handling**: Gracefully handles and explains blocked malicious or anomalous requests
 
-### Observability & Management
+#### Observability & Management
 - **Phoenix Integration**: Full observability with Arize Phoenix for tracing and monitoring
 - **Dataset Synchronization**: Automatic sync between Phoenix datasets and vector store
 - **Interactive UI**: Web-based interface for chatting with agent and managing datasets
 - **Dynamic Dataset Updates**: Add new examples to baseline datasets in real-time from the UI
+
+
 
 ## API Endpoints
 
