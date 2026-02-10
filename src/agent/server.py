@@ -9,14 +9,12 @@ from src.agent.models import (
 from src.agent.chat_service import ChatService
 import os
 
-from arize.otel import register
+from phoenix.otel import register
 
-# Configure the Arize tracer
-# Reads ARIZE_SPACE_ID, ARIZE_API_KEY, and ARIZE_PROJECT_NAME from environment variables
+# Configure the Phoenix tracer
 tracer_provider = register(
-    space_id=os.getenv("ARIZE_SPACE_ID"),
-    api_key=os.getenv("ARIZE_API_KEY"),
-    project_name=os.getenv("ARIZE_PROJECT_NAME", "Guardrails Project"),
+    project_name=os.getenv("PHOENIX_PROJECT_NAME", "Guardrails Project"),
+    endpoint=os.getenv("PHOENIX_COLLECTOR_ENDPOINT", "http://localhost:6006"),
 )
 
 chat_service = ChatService()

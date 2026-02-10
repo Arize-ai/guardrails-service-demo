@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Load datasets on startup"""
-    logger.info("Starting up: Loading datasets from examples/data into Arize...")
+    logger.info("Starting up: Loading datasets from examples/data into Phoenix...")
 
     try:
         # Import here to avoid circular imports
@@ -41,21 +41,21 @@ async def lifespan(app: FastAPI):
         # Initialize dataset manager (we'll load directly to vector DBs, not via API)
         dataset_manager = DatasetManager()
 
-        # Load or create anomaly dataset in Arize
+        # Load or create anomaly dataset in Phoenix
         logger.info("Loading anomaly baseline dataset...")
-        anomaly_exists, anomaly_dataset = dataset_manager._check_dataset_exists(
+        anomaly_exists = dataset_manager._check_dataset_exists(
             PHARMACY_ANOMALY_DATASET
         )
 
         if anomaly_exists:
-            logger.info(f"Found existing dataset '{PHARMACY_ANOMALY_DATASET}' in Arize")
-            anomaly_records = dataset_manager._load_dataset_from_arize(anomaly_dataset)
+            logger.info(f"Found existing dataset '{PHARMACY_ANOMALY_DATASET}' in Phoenix")
+            anomaly_records = dataset_manager._load_dataset_from_phoenix(PHARMACY_ANOMALY_DATASET)
         else:
             logger.info(
                 f"Creating new dataset '{PHARMACY_ANOMALY_DATASET}' from examples"
             )
             anomaly_records = dataset_manager._load_example_data("baseline.json")
-            dataset_manager._create_arize_dataset(
+            dataset_manager._create_phoenix_dataset(
                 PHARMACY_ANOMALY_DATASET, anomaly_records
             )
 
@@ -66,18 +66,18 @@ async def lifespan(app: FastAPI):
         anomaly_count = anomaly_db.add_baseline_data(anomaly_records)
         logger.info(f"Loaded {anomaly_count} anomaly records into vector database")
 
-        # Load or create malicious dataset in Arize
+        # Load or create malicious dataset in Phoenix
         logger.info("Loading malicious baseline dataset...")
-        malicious_exists, malicious_dataset = dataset_manager._check_dataset_exists(
+        malicious_exists = dataset_manager._check_dataset_exists(
             PHARMACY_MALICIOUS_DATASET
         )
 
         if malicious_exists:
             logger.info(
-                f"Found existing dataset '{PHARMACY_MALICIOUS_DATASET}' in Arize"
+                f"Found existing dataset '{PHARMACY_MALICIOUS_DATASET}' in Phoenix"
             )
-            malicious_records = dataset_manager._load_dataset_from_arize(
-                malicious_dataset
+            malicious_records = dataset_manager._load_dataset_from_phoenix(
+                PHARMACY_MALICIOUS_DATASET
             )
         else:
             logger.info(
@@ -86,7 +86,7 @@ async def lifespan(app: FastAPI):
             malicious_records = dataset_manager._load_example_data(
                 "malicious_baseline.json"
             )
-            dataset_manager._create_arize_dataset(
+            dataset_manager._create_phoenix_dataset(
                 PHARMACY_MALICIOUS_DATASET, malicious_records
             )
 

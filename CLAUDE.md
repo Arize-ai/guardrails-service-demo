@@ -11,6 +11,7 @@ This is a collection of project prototypes with the main project being a Python-
 ### Architecture
 - FastAPI-based REST API service in `guardrails_service/`
 - Docker containerized with development support via docker-compose
+- Self-hosted Phoenix for dataset management and OpenTelemetry tracing (port 6006 UI, port 4317 gRPC)
 
 ### Common Commands
 

@@ -15,12 +15,12 @@ app = Flask(__name__)
 AGENT_API_URL = os.getenv("AGENT_API_URL", "http://localhost:8001")
 
 # Initialize dataset manager
-# Reads ARIZE_API_KEY and ARIZE_SPACE_ID from environment variables
+# Reads PHOENIX_COLLECTOR_ENDPOINT from environment variables
 dataset_manager = DatasetManager()
 
 
 # Initialize on startup - just log dataset status, don't sync
-logger.info("Checking Arize datasets on startup...")
+logger.info("Checking Phoenix datasets on startup...")
 try:
     info = dataset_manager.get_dataset_info(
         [PHARMACY_ANOMALY_DATASET, PHARMACY_MALICIOUS_DATASET]
@@ -44,7 +44,7 @@ def health():
 
 @app.route("/datasets/info")
 def datasets_info():
-    """Get information about Arize datasets"""
+    """Get information about Phoenix datasets"""
     try:
         info = dataset_manager.get_dataset_info(
             [
@@ -59,7 +59,7 @@ def datasets_info():
 
 @app.route("/datasets/sync", methods=["POST"])
 def sync_datasets():
-    """Manually trigger dataset synchronization from Arize to vector store"""
+    """Manually trigger dataset synchronization from Phoenix to vector store"""
     try:
         # Sync both datasets
         anomaly_result = dataset_manager.sync_dataset_to_vector_store(

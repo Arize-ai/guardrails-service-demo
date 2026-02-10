@@ -1,7 +1,7 @@
 """
-Dataset Manager for Arize Integration
+Dataset Manager for Phoenix Integration
 
-Manages baseline datasets in Arize and syncs them with the vector store.
+Manages baseline datasets in Phoenix and syncs them with the vector store.
 """
 
 from datetime import datetime
@@ -9,39 +9,31 @@ import json
 import os
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-import pandas as pd
 import httpx
-from arize.experimental.datasets import ArizeDatasetsClient
-from arize.pandas.proto.flight_pb2 import DatasetType
+from phoenix.client import Client
 
 
 class DatasetManager:
-    """Manages Arize datasets and vector store synchronization"""
+    """Manages Phoenix datasets and vector store synchronization"""
 
     def __init__(
         self,
-        arize_api_key: str = None,
-        arize_space_id: str = None,
+        phoenix_endpoint: str = None,
         guardrails_api_url: str = None,
     ):
         """
         Initialize the dataset manager
 
         Args:
-            arize_api_key: Arize API key
-            arize_space_id: Arize Space ID
+            phoenix_endpoint: Phoenix server endpoint URL
             guardrails_api_url: URL to guardrails API
         """
-        self.arize_api_key = arize_api_key or os.getenv("ARIZE_API_KEY")
-        self.arize_space_id = arize_space_id or os.getenv("ARIZE_SPACE_ID")
+        self.phoenix_endpoint = phoenix_endpoint or os.getenv(
+            "PHOENIX_COLLECTOR_ENDPOINT", "http://localhost:6006"
+        )
         self.guardrails_api_url = guardrails_api_url or os.getenv("GUARDRAILS_API_URL")
 
-        if not self.arize_api_key:
-            raise ValueError("ARIZE_API_KEY must be set")
-        if not self.arize_space_id:
-            raise ValueError("ARIZE_SPACE_ID must be set")
-
-        self.client = ArizeDatasetsClient(api_key=self.arize_api_key)
+        self.client = Client(base_url=self.phoenix_endpoint)
 
         # Path to example data
         self.examples_dir = Path(__file__).parent.parent / "examples" / "data"
@@ -50,7 +42,7 @@ class DatasetManager:
         self, anomaly_dataset_name: str, malicious_dataset_name: str
     ) -> Dict[str, str]:
         """
-        Check for datasets in Arize and sync with vector store
+        Check for datasets in Phoenix and sync with vector store
 
         Args:
             anomaly_dataset_name: Name of the anomaly dataset
@@ -87,40 +79,39 @@ class DatasetManager:
         self, dataset_name: str, example_file: str, api_endpoint: str
     ) -> str:
         """
-        Sync a single dataset from Arize to vector store
+        Sync a single dataset from Phoenix to vector store
 
         Args:
-            dataset_name: Name of the Arize dataset
+            dataset_name: Name of the Phoenix dataset
             example_file: Filename of example data if dataset doesn't exist
             api_endpoint: API endpoint to upload data to vector store
 
         Returns:
             Status message
         """
-        # Check if dataset exists in Arize
-        dataset_exists, dataset = self._check_dataset_exists(dataset_name)
+        # Check if dataset exists in Phoenix
+        dataset_exists = self._check_dataset_exists(dataset_name)
 
         if dataset_exists:
-            # Load from Arize
-            print(f"Found dataset '{dataset_name}' in Arize, loading...")
-            records = self._load_dataset_from_arize(dataset)
-            status = f"Loaded from Arize ({len(records)} records)"
+            # Load from Phoenix
+            print(f"Found dataset '{dataset_name}' in Phoenix, loading...")
+            records = self._load_dataset_from_phoenix(dataset_name)
+            status = f"Loaded from Phoenix ({len(records)} records)"
         else:
             # Create from example data
             print(f"Dataset '{dataset_name}' not found, creating from examples...")
             try:
                 records = self._load_example_data(example_file)
 
-                # Create dataset in Arize
-                self._create_arize_dataset(dataset_name, records)
+                # Create dataset in Phoenix
+                self._create_phoenix_dataset(dataset_name, records)
                 status = f"Created from examples ({len(records)} records)"
             except Exception as e:
                 # If creation fails (e.g., dataset was just created), try to load it
                 print(f"Failed to create dataset, attempting to load: {e}")
-                dataset_exists, dataset = self._check_dataset_exists(dataset_name)
-                if dataset_exists:
-                    records = self._load_dataset_from_arize(dataset)
-                    status = f"Loaded from Arize ({len(records)} records)"
+                if self._check_dataset_exists(dataset_name):
+                    records = self._load_dataset_from_phoenix(dataset_name)
+                    status = f"Loaded from Phoenix ({len(records)} records)"
                 else:
                     raise Exception(f"Dataset upload failed: {str(e)}")
 
@@ -130,56 +121,49 @@ class DatasetManager:
 
         return status
 
-    def _check_dataset_exists(self, dataset_name: str) -> Tuple[bool, Optional[str]]:
+    def _check_dataset_exists(self, dataset_name: str) -> bool:
         """
-        Check if a dataset exists in Arize (lightweight check without loading data)
+        Check if a dataset exists in Phoenix
 
         Args:
             dataset_name: Name of the dataset
 
         Returns:
-            Tuple of (exists: bool, dataset_name or None)
+            True if dataset exists, False otherwise
         """
-
         try:
-            # List all datasets in the space (lightweight operation)
-            datasets_df = self.client.list_datasets(space_id=self.arize_space_id)
-
-            # Check if our dataset name is in the list
-            if dataset_name in datasets_df["dataset_name"].values:
-                return True, dataset_name
-            else:
-                return False, None
+            datasets = self.client.datasets.list()
+            return any(ds["name"] == dataset_name for ds in datasets)
         except Exception as e:
             print(f"Error checking if dataset {dataset_name} exists: {e}")
-            return False, None
+            return False
 
-    def _load_dataset_from_arize(self, dataset_name: str) -> List[Dict]:
+    def _load_dataset_from_phoenix(self, dataset_name: str) -> List[Dict]:
         """
-        Load dataset from Arize and convert to records format
+        Load dataset from Phoenix and convert to records format
 
         Args:
-            dataset_name: Arize dataset name
+            dataset_name: Phoenix dataset name
 
         Returns:
             List of records with 'text' and 'timestamp' fields
         """
-        # Get dataset from Arize
-        df = self.client.get_dataset(
-            space_id=self.arize_space_id, dataset_name=dataset_name
-        )
+        dataset = self.client.datasets.get_dataset(dataset=dataset_name)
+        df = dataset.to_dataframe()
 
         print(f"Loaded DataFrame with {len(df)} rows")
         print(f"DataFrame columns: {df.columns.tolist()}")
         if len(df) > 0:
             print(f"First row sample: {df.iloc[0].to_dict()}")
 
-        # Convert to records format expected by vector store
+        # Convert from Phoenix input/metadata format to records
         records = []
         for _, row in df.iterrows():
-            # Arize datasets should have 'text' and 'timestamp' columns
-            text_val = row.get("text", "")
-            timestamp_val = row.get("timestamp", "")
+            input_data = row.get("input", {})
+            metadata = row.get("metadata", {})
+
+            text_val = input_data.get("text", "") if isinstance(input_data, dict) else ""
+            timestamp_val = metadata.get("timestamp", "") if isinstance(metadata, dict) else ""
 
             if text_val:
                 record = {
@@ -216,33 +200,30 @@ class DatasetManager:
         # Extract requests array
         return data.get("requests", [])
 
-    def _create_arize_dataset(self, dataset_name: str, records: List[Dict]) -> str:
+    def _create_phoenix_dataset(self, dataset_name: str, records: List[Dict]) -> None:
         """
-        Create a dataset in Arize from records
+        Create a dataset in Phoenix from records
 
         Args:
             dataset_name: Name for the new dataset
             records: List of records to upload
-
-        Returns:
-            Dataset ID
         """
         try:
-            # Convert records to DataFrame
-            df = pd.DataFrame(records)
+            inputs = [{"text": r["text"]} for r in records]
+            metadata = [
+                {"timestamp": r.get("timestamp", datetime.now().isoformat())}
+                for r in records
+            ]
 
-            # Create dataset in Arize
-            dataset_id = self.client.create_dataset(
-                space_id=self.arize_space_id,
-                dataset_name=dataset_name,
-                dataset_type=DatasetType.Value("GENERATIVE"),
-                data=df,
+            dataset = self.client.datasets.create_dataset(
+                name=dataset_name,
+                inputs=inputs,
+                metadata=metadata,
             )
 
-            print(f"Created dataset '{dataset_name}' in Arize with ID: {dataset_id}")
-            return dataset_id
+            print(f"Created dataset '{dataset_name}' in Phoenix")
         except Exception as e:
-            print(f"Error creating Arize dataset: {e}")
+            print(f"Error creating Phoenix dataset: {e}")
             raise
 
     def _clear_vector_store(self, clear_endpoint: str) -> int:
@@ -313,7 +294,7 @@ class DatasetManager:
 
     def get_dataset_info(self, names: List[str]) -> Dict[str, any]:
         """
-        Get information about all managed datasets
+        Get information about managed datasets
 
         Returns:
             Dictionary with dataset information
@@ -321,21 +302,17 @@ class DatasetManager:
         info = {}
 
         try:
-            # Get list of all datasets once
-            datasets_df = self.client.list_datasets(space_id=self.arize_space_id)
+            datasets = self.client.datasets.list()
+            datasets_by_name = {ds["name"]: ds for ds in datasets}
 
             for dataset_name in names:
-                # Check if dataset exists in the list
-                matching_datasets = datasets_df[
-                    datasets_df["dataset_name"] == dataset_name
-                ]
-
-                if not matching_datasets.empty:
-                    dataset_row = matching_datasets.iloc[0]
+                if dataset_name in datasets_by_name:
+                    ds = datasets_by_name[dataset_name]
                     info[dataset_name] = {
                         "exists": True,
                         "name": dataset_name,
-                        "created_at": str(dataset_row.get("created_at", "unknown")),
+                        "created_at": str(ds.get("created_at", "unknown")),
+                        "example_count": ds.get("example_count", 0),
                     }
                 else:
                     info[dataset_name] = {"exists": False}
@@ -351,7 +328,7 @@ class DatasetManager:
 
     def add_to_dataset(self, dataset_name: str, text: str, timestamp: str) -> bool:
         """
-        Add a single entry to an Arize dataset
+        Add a single entry to a Phoenix dataset
 
         Args:
             dataset_name: Name of the dataset
@@ -363,7 +340,6 @@ class DatasetManager:
         """
         try:
             # Normalize timestamp - strip milliseconds to match existing format
-            # Convert "2025-10-15T18:11:11.756Z" to "2025-10-15T18:11:11"
             ts = timestamp.replace("Z", "+00:00")
             dt = datetime.fromisoformat(ts)
             normalized_timestamp = dt.strftime("%Y-%m-%dT%H:%M:%S")
@@ -371,45 +347,22 @@ class DatasetManager:
                 f"Normalized timestamp from '{timestamp}' to '{normalized_timestamp}'"
             )
 
-            # Check if dataset exists
-            dataset_exists, _ = self._check_dataset_exists(dataset_name)
-
-            if dataset_exists:
-                # Get existing dataset and append new row
+            if self._check_dataset_exists(dataset_name):
+                # Append to existing dataset
                 print(f"Appending to existing dataset {dataset_name}")
-
-                # Load existing data
-                existing_df = self.client.get_dataset(
-                    space_id=self.arize_space_id,
-                    dataset_name=dataset_name
+                self.client.datasets.add_examples_to_dataset(
+                    dataset=dataset_name,
+                    inputs=[{"text": text}],
+                    metadata=[{"timestamp": normalized_timestamp}],
                 )
-
-                # Create new row
-                new_row = pd.DataFrame(
-                    [{"text": text, "timestamp": normalized_timestamp}]
-                )
-
-                # Concatenate existing data with new row
-                combined_df = pd.concat([existing_df, new_row], ignore_index=True)
-
-                # Update dataset with combined data
-                self.client.update_dataset(
-                    space_id=self.arize_space_id,
-                    dataset_name=dataset_name,
-                    data=combined_df,
-                )
-                print(f"Added entry to existing dataset {dataset_name} (total rows: {len(combined_df)})")
+                print(f"Added entry to existing dataset {dataset_name}")
             else:
                 # Create new dataset with single entry
                 print(f"Creating new dataset {dataset_name} with entry")
-                new_row = pd.DataFrame(
-                    [{"text": text, "timestamp": normalized_timestamp}]
-                )
-                self.client.create_dataset(
-                    space_id=self.arize_space_id,
-                    dataset_name=dataset_name,
-                    dataset_type=DatasetType.Value("GENERATIVE"),
-                    data=new_row,
+                self.client.datasets.create_dataset(
+                    name=dataset_name,
+                    inputs=[{"text": text}],
+                    metadata=[{"timestamp": normalized_timestamp}],
                 )
                 print(f"Created new dataset {dataset_name} with entry")
 
@@ -426,9 +379,9 @@ class DatasetManager:
         self, type: str, dataset_name: str
     ) -> Dict[str, any]:
         """
-        Sync an Arize dataset to the vector store
+        Sync a Phoenix dataset to the vector store
 
-        Clears the vector store first, then uploads all data from Arize dataset.
+        Clears the vector store first, then uploads all data from Phoenix dataset.
 
         Args:
             type: 'anomaly' or 'malicious'
@@ -445,9 +398,7 @@ class DatasetManager:
         try:
             # Check if dataset exists
             print(f"Step 1: Checking if dataset exists...")
-            dataset_exists, _ = self._check_dataset_exists(dataset_name)
-
-            if not dataset_exists:
+            if not self._check_dataset_exists(dataset_name):
                 error_msg = f"Dataset {dataset_name} not found"
                 print(f"ERROR: {error_msg}")
                 return {"success": False, "error": error_msg}
@@ -457,10 +408,10 @@ class DatasetManager:
             records_cleared = self._clear_vector_store(clear_endpoint)
             print(f"Cleared {records_cleared} records")
 
-            # Load records from Arize
-            print(f"Step 3: Loading records from Arize dataset...")
-            records = self._load_dataset_from_arize(dataset_name)
-            print(f"Loaded {len(records)} records from Arize")
+            # Load records from Phoenix
+            print(f"Step 3: Loading records from Phoenix dataset...")
+            records = self._load_dataset_from_phoenix(dataset_name)
+            print(f"Loaded {len(records)} records from Phoenix")
 
             # Upload to vector store
             print(f"Step 4: Uploading to vector store at {api_endpoint}...")
