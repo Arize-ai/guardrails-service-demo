@@ -92,9 +92,9 @@ def add_to_dataset():
             return jsonify({"error": "Missing required fields"}), 400
 
         # Map dataset_type to actual dataset name
-        if dataset_type == "anomaly":
+        if dataset_type in ("anomaly", PHARMACY_ANOMALY_DATASET):
             dataset_name = PHARMACY_ANOMALY_DATASET
-        elif dataset_type == "malicious":
+        elif dataset_type in ("malicious", PHARMACY_MALICIOUS_DATASET):
             dataset_name = PHARMACY_MALICIOUS_DATASET
         else:
             return jsonify({"error": f"Invalid dataset_type: {dataset_type}"}), 400
